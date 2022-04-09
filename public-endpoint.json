@@ -1,4 +1,4 @@
 {
     "containerName": "gan-scanner",
-    "containerPort": 5000
+    "containerPort": 80
 }
