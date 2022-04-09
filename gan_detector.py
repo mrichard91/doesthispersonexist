@@ -46,6 +46,8 @@ def scan_url(url):
         return {'status': 'fail', 'error': str(e)}
     img = get_pil_img(data)
     eyes = np.array([get_eyes(img)])
+    if eyes is None:
+        return {'status': 'fail', 'error': 'no face detected'}
     flat_pts = eyes.reshape(eyes.shape[0], eyes.shape[1]*eyes.shape[2])
     dist = pairwise_distances(mean_eyes.reshape(1,24), flat_pts)
     return {
