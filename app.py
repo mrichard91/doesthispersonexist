@@ -16,7 +16,7 @@ def url_scan():
             return jsonify({'status': 'fail', 'results': str(e)})
     elif str(payload.get('data')).startswith('data'):
         try:
-            data = payload.get('data').split(',')[-1]
+            data = payload.get('data').split(',')[1]
             results = scan_data(data)
         except Exception as e:
             return jsonify({'status': 'fail', 'results': str(e)})

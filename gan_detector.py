@@ -41,16 +41,19 @@ def get_image_data(url):
 
 def scan_data(b64data):
     try:
-        data, sha256 = base64.b64decode(b64data.split(',')[-1])
+        data = base64.b64decode(b64data)
+        sha256 = hashlib.sha256(data).hexdigest()
     except Exception as e:
         print("could not decode")
-        return {'status': 'fail', 'error': f'could not decode {len(data)}'}
+        return {'status': 'fail', 'error': f'could not decode {len(b64data)} {b64data[:10]}'}
     img = get_pil_img(data)
-    eyes = np.array([get_eyes(img)])
+    eyes = get_eyes(img)
     if eyes is None:
-        return {'status': 'fail', 'error': 'no face detected'}
-    flat_pts = eyes.reshape(eyes.shape[0], eyes.shape[1]*eyes.shape[2])
-    dist = pairwise_distances(mean_eyes.reshape(1,24), flat_pts)
+        dist = [[-1]]
+    else:
+        eyes = np.array([eyes])
+        flat_pts = eyes.reshape(eyes.shape[0], eyes.shape[1]*eyes.shape[2])
+        dist = pairwise_distances(mean_eyes.reshape(1,24), flat_pts)
     return {
         'status': 'ok', 
         'dist': dist[0][0],
@@ -65,11 +68,13 @@ def scan_url(url):
         print(f'couldnot fetch {url} because {e}')
         return {'status': 'fail', 'error': str(e)}
     img = get_pil_img(data)
-    eyes = np.array([get_eyes(img)])
+    eyes = get_eyes(img)
     if eyes is None:
-        return {'status': 'fail', 'error': 'no face detected'}
-    flat_pts = eyes.reshape(eyes.shape[0], eyes.shape[1]*eyes.shape[2])
-    dist = pairwise_distances(mean_eyes.reshape(1,24), flat_pts)
+        dist = [[-1]]
+    else:
+        eyes = np.array([eyes])
+        flat_pts = eyes.reshape(eyes.shape[0], eyes.shape[1]*eyes.shape[2])
+        dist = pairwise_distances(mean_eyes.reshape(1,24), flat_pts)
     return {
         'status': 'ok', 
         'dist': dist[0][0],
