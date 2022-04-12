@@ -5,6 +5,7 @@ import requests
 from PIL import Image
 from io import BytesIO
 import hashlib
+import base64
 
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor('shape_68.dat')
@@ -37,6 +38,25 @@ def get_image_data(url):
         sha256 = hashlib.sha256(data).hexdigest()
         return (data, sha256)
     return None
+
+def scan_data(b64data):
+    try:
+        data, sha256 = base64.b64decode(b64data.split(',')[-1])
+    except Exception as e:
+        print("could not decode")
+        return {'status': 'fail', 'error': f'could not decode {len(data)}'}
+    img = get_pil_img(data)
+    eyes = np.array([get_eyes(img)])
+    if eyes is None:
+        return {'status': 'fail', 'error': 'no face detected'}
+    flat_pts = eyes.reshape(eyes.shape[0], eyes.shape[1]*eyes.shape[2])
+    dist = pairwise_distances(mean_eyes.reshape(1,24), flat_pts)
+    return {
+        'status': 'ok', 
+        'dist': dist[0][0],
+        'sha256': sha256,
+    } 
+
 
 def scan_url(url):
     try:

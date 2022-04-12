@@ -1,18 +1,25 @@
 from flask import Flask, jsonify, request
 from flask_cors import cross_origin
-from gan_detector import scan_url
+from gan_detector import scan_url, scan_data
 import json
 app = Flask(__name__)
 
 @app.route('/scan_url', methods=['POST'])
 @cross_origin()
 def url_scan():
-    url = json.loads(request.data).get('url')
-    try:
-        results = scan_url(url)
-    except Exception as e:
-        return jsonify({'status': 'fail', 'results': str(e)})
-    print(results)
+    payload = json.loads(request.data)
+    if str(payload.get('url')).startswith('http'):
+        url = payload.get('url')
+        try:
+            results = scan_url(url)
+        except Exception as e:
+            return jsonify({'status': 'fail', 'results': str(e)})
+    elif str(payload.get('data')).startswith('data'):
+        try:
+            data = payload.get('data').split(',')[-1]
+            results = scan_data(data)
+        except Exception as e:
+            return jsonify({'status': 'fail', 'results': str(e)})
     return jsonify({'status': 'ok', 'results': results})
 
 @app.route('/')
