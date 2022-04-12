@@ -6,7 +6,7 @@ EXPOSE 80/tcp
 WORKDIR /app
 
 # Copy the dependencies file to the working directory
-COPY *.py .
+COPY *.py /app/
 COPY shape_68.dat .
 COPY requirements.txt .
 COPY uwsgi.ini .
