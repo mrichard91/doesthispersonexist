@@ -1,11 +1,9 @@
 from flask import Flask, jsonify, request
-from flask_cors import cross_origin
 from gan_detector import scan_url, scan_data
 import json
 app = Flask(__name__)
 
 @app.route('/scan_url', methods=['POST'])
-@cross_origin()
 def url_scan():
     payload = json.loads(request.data)
     if str(payload.get('url')).startswith('http'):
