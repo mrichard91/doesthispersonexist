@@ -32,21 +32,8 @@ def get_pil_img(data):
         img = img.resize((400,400))
     return img
 
-def get_image_data(url):
-    r = requests.get(url)
-    if r.status_code == 200:
-        data = r.content
-        sha256 = hashlib.sha256(data).hexdigest()
-        return (data, sha256)
-    return None
-
-def scan_data(b64data):
-    try:
-        data = base64.b64decode(b64data)
-        sha256 = hashlib.sha256(data).hexdigest()
-    except Exception as e:
-        print("could not decode")
-        return {'status': 'fail', 'error': f'could not decode {len(b64data)} {b64data[:10]}'}
+def scan_data(data):
+    sha256 = hashlib.sha256(data).hexdigest()
     img = get_pil_img(data)
     eyes = get_eyes(img)
     if eyes is None:
@@ -59,26 +46,4 @@ def scan_data(b64data):
         'status': 'ok', 
         'dist': dist[0][0],
         'sha256': sha256,
-    } 
-
-
-def scan_url(url):
-    try:
-        data, sha256 = get_image_data(url)
-    except Exception as e:
-        print(f'couldnot fetch {url} because {e}')
-        return {'status': 'fail', 'error': str(e)}
-    img = get_pil_img(data)
-    eyes = get_eyes(img)
-    if eyes is None:
-        dist = [[-1]]
-    else:
-        eyes = np.array([eyes])
-        flat_pts = eyes.reshape(eyes.shape[0], eyes.shape[1]*eyes.shape[2])
-        dist = pairwise_distances(mean_eyes.reshape(1,24), flat_pts)
-    return {
-        'status': 'ok', 
-        'dist': dist[0][0],
-        'sha256': sha256,
-        'img_url': url,
     } 
