@@ -7,6 +7,7 @@ from io import BytesIO
 import hashlib
 import base64
 
+print("loading detector")
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor('shape_68.dat')
 mean_eyes = np.array([[[130.1382, 190.334 , 142.5089, 182.7387, 157.0245, 183.1371,
