@@ -1,11 +1,9 @@
 import dlib
 import numpy as np
 from sklearn.metrics import pairwise_distances
-import requests
 from PIL import Image
 from io import BytesIO
 import hashlib
-import base64
 
 print("loading detector")
 detector = dlib.get_frontal_face_detector()
