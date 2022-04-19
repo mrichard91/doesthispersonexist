@@ -28,6 +28,8 @@ def get_pil_img(data):
     img = Image.open(BytesIO(data))
     if img.size != (400,400):
         img = img.resize((400,400))
+    if img.mode != "RGB":
+        img = img.convert('RGB')
     return img
 
 def scan_data(data):
