@@ -27,10 +27,10 @@ async def fetch_url(url: str):
 
 @app.post('/scan_url', response_model=ScanResponse)
 async def url_scan(scan_request: ScanRequest) -> ScanResponse:
-    if scan_request.url is not None:
+    if scan_request.url:
         url_data = await fetch_url(scan_request.url)
         results = scan_data(url_data)
-    elif scan_request.data is not None:
+    elif scan_request.data:
         data = base64.b64decode(scan_request.data.split(',')[1])
         results = scan_data(data)
     return {"status": "ok", "results": results}
