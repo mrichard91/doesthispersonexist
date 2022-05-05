@@ -31,7 +31,10 @@ async def url_scan(scan_request: ScanRequest) -> ScanResponse:
         url_data = await fetch_url(scan_request.url)
         results = scan_data(url_data)
     elif scan_request.data:
-        data = base64.b64decode(scan_request.data.split(',')[1])
+        if scan_request.data.startswith('data'):
+            data = base64.b64decode(scan_request.data.split(',')[1])
+        else:
+            data = base64.b64decode(scan_request.data)
         results = scan_data(data)
     return {"status": "ok", "results": results}
 
