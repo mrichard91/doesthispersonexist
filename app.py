@@ -18,7 +18,7 @@ class ScanResponse(BaseModel):
     results: Optional[Dict[str, Any]]
 
 class ScanMultipleRequest(BaseModel):
-    url: List[str]
+    urls: List[str]
 
 class ScanMultipleResponse(BaseModel):
     status: str
@@ -40,8 +40,8 @@ async def fetch_url(url: str, session: aiohttp.ClientSession = None):
                 data = await r.content.read()
                 return data
 
-@app.post('/scan_urls', response_model=ScanResponse)
-async def url_scans(scan_request: ScanRequest) -> ScanResponse:
+@app.post('/scan_urls', response_model=ScanMultipleResponse)
+async def url_scans(scan_request: ScanMultipleRequest) -> ScanMultipleResponse:
     urls = scan_request.urls
     async with aiohttp.ClientSession() as session:
 

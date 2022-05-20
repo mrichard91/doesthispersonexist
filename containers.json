@@ -1,6 +1,6 @@
 {
     "gan-scanner": {
-        "image": ":gan-scanner.gan-scanner.4",
+        "image": ":gan-scanner.gan-scanner.10",
         "ports": {
             "80": "HTTP"
         }
